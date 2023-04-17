@@ -1,0 +1,21 @@
+// sidebar.css
+
+.sidebar {
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+.sidebar a {
+  color: blue;
+  text-decoration: underline;
+}
+
+.sidebar a:hover {
+  color: red;
+}
+
+.sidebar h1:last-of-type {
+  margin-top: 20px;
+  text-decoration: none;
+  color: green;
+}

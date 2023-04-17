@@ -1,19 +1,42 @@
+"use strict";
+
 const express = require("express");
 const morgan = require("morgan");
-const app = express();
+// const app = express();
 
 // import handlers here
-const { getProfile } = require("./handlers");
+const {
+  createBlog,
+  getBlog,
+  getPublishedRecipes,
+  getOnePublishedRecipe,
+  createTag,
+  getAllTags,
+  contactUs,
+} = require("./handlers");
 
 const PORT = 8000;
 
-//Endpoints
+express()
+  .use(morgan("tiny"))
+  .use(express.static("public"))
+  .use(express.json())
+  .use(express.urlencoded({ extended: false }))
+  .use("/", express.static(__dirname + "/"))
 
-//   .get("/api/getProfile", getProfile)
+  //Endpoints
 
-//catch
+  .post("/newblog", createBlog)
+  .get("/blogs", getBlog)
+  .get("/recipes", getPublishedRecipes)
+  .get("/recipes/:recipeId", getOnePublishedRecipe)
+  .post("/newtag", createTag)
+  .get("/tags", getAllTags)
+  .post("/contactus", contactUs)
 
-//listening on Port
-app.listen(PORT, () => {
-  console.info("Listening on port 8000");
-});
+  //catch
+  .use((req, res) => res.status(404).type("txt").send("🤷‍♂️"))
+
+  //listening on Port
+
+  .listen(PORT, () => console.log(`Listening on port ${PORT}`));

@@ -1,0 +1,29 @@
+.recipe-table {
+  margin: 20px;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.recipe-table th,
+.recipe-table td {
+  text-align: left;
+  padding: 8px;
+}
+
+.recipe-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.recipe-table td {
+  border-bottom: 1px solid #ddd;
+}
+
+.recipe-table td:last-child {
+  text-align: center;
+}
+
+.recipe-arrow {
+  color: blue;
+  cursor: pointer;
+}
