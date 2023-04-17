@@ -1,0 +1,21 @@
+.recipe-featured-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.recipe {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px;
+}
+
+.recipe h2 {
+  margin: 0;
+}
+
+.recipe p {
+  margin: 10px 0;
+}
