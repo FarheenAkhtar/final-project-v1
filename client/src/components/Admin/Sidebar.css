@@ -1,8 +1,8 @@
-// sidebar.css
-
 .sidebar {
   background-color: #f2f2f2;
   padding: 20px;
+  border-width: 1px;
+  border-color: rgba(0, 0, 0, 0.25);
 }
 
 .sidebar a {
@@ -14,8 +14,8 @@
   color: red;
 }
 
-.sidebar h1:last-of-type {
+.sidebar h1 {
   margin-top: 20px;
   text-decoration: none;
-  color: green;
+  color: rgb(78, 78, 78);
 }

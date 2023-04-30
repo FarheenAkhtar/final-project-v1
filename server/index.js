@@ -2,6 +2,7 @@
 
 const express = require("express");
 const morgan = require("morgan");
+
 // const app = express();
 
 // import handlers here
@@ -12,8 +13,14 @@ const {
   getOnePublishedRecipe,
   createTag,
   getAllTags,
+  getItemsFromCategory,
   contactUs,
+  authenticateUser,
+  updateBlog,
+  newsletterList,
 } = require("./handlers");
+
+const { generateUploadURL } = require("./s3.js");
 
 const PORT = 8000;
 
@@ -32,7 +39,18 @@ express()
   .get("/recipes/:recipeId", getOnePublishedRecipe)
   .post("/newtag", createTag)
   .get("/tags", getAllTags)
+  .get("/category/:categoryId", getItemsFromCategory)
+  // .get("/admin/:email", getCustomer)
   .post("/contactus", contactUs)
+  .post("/login", authenticateUser)
+  .post("/newsletter", newsletterList)
+  .patch("/update/:recipeId", updateBlog)
+
+  // GET secure URL where images will be sent to S3 bucket ADMIN ENDPOINT
+  .get("/s3Url", async (req, res) => {
+    const url = await generateUploadURL();
+    res.send({ url });
+  })
 
   //catch
   .use((req, res) => res.status(404).type("txt").send("🤷‍♂️"))

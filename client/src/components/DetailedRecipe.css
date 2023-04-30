@@ -1,0 +1,27 @@
+.recipe-list {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding-left: 30rem;
+  font-family: "open sans", sans-serif;
+  font-size: 18px;
+}
+
+.detailed_recipe {
+  display: flex;
+  flex-direction: column;
+}
+
+.detailed_recipe_image {
+  width: 740px;
+  height: 493px;
+  object-fit: cover;
+}
+
+.detailed_recipe_numberedlist {
+  list-style-type: decimal;
+}
+
+.detailed_recipe_bulletlist {
+  list-style-type: disc;
+}

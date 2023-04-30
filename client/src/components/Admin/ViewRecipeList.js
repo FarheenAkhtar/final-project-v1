@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import "./ViewRecipeList.css";
+import { UserContext } from "./UserContext";
 
 const RecipeList = () => {
-  const [recipes, setRecipes] = useState([]);
   const { recipeId } = useParams();
+  const [recipes, setRecipes] = useState([]);
+  const { currentUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   // This needs to be tabular with border boxes
@@ -19,12 +21,19 @@ const RecipeList = () => {
       .catch((err) => console.log(err));
   }, []);
 
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/");
+    }
+  }, [currentUser]);
+
   return (
     <table className="recipe-table">
       <thead>
         <tr>
           <th>Title</th>
           <th>Date</th>
+          <th>Status</th>
           <th></th>
         </tr>
       </thead>
@@ -33,8 +42,9 @@ const RecipeList = () => {
           <tr key={recipe._id}>
             <td>{recipe.title}</td>
             <td>{recipe.date}</td>
+            <td>{recipe.status}</td>
             <td>
-              <Link className="recipe-arrow" to={`/recipe/${recipe._id}`}>
+              <Link className="recipe-arrow" to={`/admin/recipe/${recipe._id}`}>
                 &#10148;
               </Link>
             </td>
