@@ -18,6 +18,8 @@ const {
   authenticateUser,
   updateBlog,
   newsletterList,
+  getLikes,
+  deleteRecipe,
 } = require("./handlers");
 
 const { generateUploadURL } = require("./s3.js");
@@ -40,11 +42,12 @@ express()
   .post("/newtag", createTag)
   .get("/tags", getAllTags)
   .get("/category/:categoryId", getItemsFromCategory)
-  // .get("/admin/:email", getCustomer)
+  .get("/likes/:recipeId", getLikes)
   .post("/contactus", contactUs)
   .post("/login", authenticateUser)
   .post("/newsletter", newsletterList)
   .patch("/update/:recipeId", updateBlog)
+  .delete("/delete/:recipeId", deleteRecipe)
 
   // GET secure URL where images will be sent to S3 bucket ADMIN ENDPOINT
   .get("/s3Url", async (req, res) => {

@@ -16,7 +16,9 @@ const RecipeList = () => {
       .then((res) => res.json())
       .then((resData) =>
         // console.log(resData.data)
-        setRecipes(resData.data)
+        setRecipes(
+          resData.data.sort((a, b) => new Date(b.date) - new Date(a.date))
+        )
       )
       .catch((err) => console.log(err));
   }, []);
@@ -26,6 +28,11 @@ const RecipeList = () => {
       navigate("/");
     }
   }, [currentUser]);
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString("en-US", options);
+  };
 
   return (
     <table className="recipe-table">
@@ -41,7 +48,7 @@ const RecipeList = () => {
         {recipes.map((recipe) => (
           <tr key={recipe._id}>
             <td>{recipe.title}</td>
-            <td>{recipe.date}</td>
+            <td>{formatDate(recipe.date)}</td>
             <td>{recipe.status}</td>
             <td>
               <Link className="recipe-arrow" to={`/admin/recipe/${recipe._id}`}>

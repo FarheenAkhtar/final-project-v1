@@ -2,6 +2,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "./UserContext";
+import "./UpdateRecipe.css";
 
 const UpdateRecipeForm = () => {
   const [title, setTitle] = useState("");
@@ -13,6 +14,7 @@ const UpdateRecipeForm = () => {
   const [image1, setImage1] = useState("");
   const [image2, setImage2] = useState("");
   const [allTags, setAllTags] = useState([]);
+  const [status, setStatus] = useState("");
   const { recipeId } = useParams();
   const [changedFields, setChangedFields] = useState({});
 
@@ -39,6 +41,7 @@ const UpdateRecipeForm = () => {
         setSteps(filteredRecipe.steps);
         setTips(filteredRecipe.tips);
         setTags(filteredRecipe.tags);
+        setStatus(filteredRecipe.status);
       })
       .catch((error) => {
         console.error(error);
@@ -66,8 +69,41 @@ const UpdateRecipeForm = () => {
     });
   };
 
-  const handleTagChange = (event) => {
-    setTags(event.target.value.split(","));
+  const handleStatus = async () => {
+    const newStatus = status === "Draft" ? "Published" : "Draft";
+    const response = await fetch(`/update/${recipeId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: newStatus }),
+    });
+
+    if (response.status > 500) {
+      // error handling
+    } else {
+      const resData = await response.json();
+      window.alert(resData.message);
+      setStatus(newStatus);
+    }
+  };
+
+  const handleDelete = async () => {
+    const response = await fetch(`/delete/${recipeId}`, {
+      method: "DELETE",
+    }).then((res) => {
+      if (res.status > 500) {
+        // error handling
+      } else {
+        res
+          .json()
+          .then((resData) => {
+            window.alert(resData.message);
+            navigate("/admin/view-recipe");
+          })
+          .catch((err) => window.alert(err));
+      }
+    });
   };
 
   useEffect(() => {
@@ -82,9 +118,13 @@ const UpdateRecipeForm = () => {
   }, []);
 
   return (
-    <div>
+    <div className="update-form">
       <div>
         <button onClick={handleUpdate}>Update</button>
+        <button onClick={handleStatus}>
+          {status === "Published" ? "Move to Draft" : "Move to Published"}
+        </button>
+        <button onClick={handleDelete}>Delete</button>
       </div>
       <form>
         <label htmlFor="title">Title:</label>
@@ -149,14 +189,6 @@ const UpdateRecipeForm = () => {
             setChangedFields({ ...changedFields, tips: event.target.value });
           }}
         />
-
-        {/* <label htmlFor="tags">Tags:</label>
-        <input
-          type="text"
-          id="tags"
-          value={tags.join(",")}
-          onChange={handleTagChange}
-        /> */}
       </form>
       <div>
         {allTags.length > 0 && (

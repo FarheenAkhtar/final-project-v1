@@ -1,4 +1,4 @@
-const { MongoClient, ObjectId } = require("mongodb");
+const { MongoClient } = require("mongodb");
 // package to generate unique ids
 const { v4: uuidv4 } = require("uuid");
 
@@ -200,7 +200,7 @@ const createBlog = async (req, res) => {
   }
 };
 
-// PUT /admin/recipes/:id: Updates an existing recipe in the database or updates tags (unpublish/publish). ADMIN PORTAL API endpoint
+// PUT /admin/recipes/:id: Updates an existing recipe in the database . ADMIN PORTAL API endpoint
 const updateBlog = async (req, res) => {
   // creates a new client
   const client = new MongoClient(MONGO_URI, options);
@@ -229,12 +229,8 @@ const updateBlog = async (req, res) => {
       $set: { date, ...data },
     };
 
-    console.log("updateQuery", updateQuery);
-
     // Update the blog document in the "blogs" collection with the given id
     const result = await blogs.updateOne({ _id: recipeId }, updateQuery);
-
-    await console.log("blog", result);
 
     if (result.modifiedCount > 0) {
       // On success/no error, send
@@ -265,6 +261,68 @@ const updateBlog = async (req, res) => {
 };
 
 // DELETE /recipes/:id: Deletes a recipe from the database. ADMIN PORTAL API endpoint
+
+const deleteRecipe = async (req, res) => {
+  // creates a new client
+  const client = new MongoClient(MONGO_URI, options);
+
+  // connect to the client
+  await client.connect();
+
+  // Capture id from req.params
+  const { recipeId } = req.params;
+
+  try {
+    // connect to the database
+    const db = await client.db("food_blog");
+
+    // create/access a collection called "blogs"
+    const blogs = db.collection("blogs");
+
+    // First, we will check whether the item actually exists in the cart
+    const result = await blogs.findOne({ _id: recipeId });
+
+    if (!result) {
+      return res.status(404).json({
+        status: 404,
+        data: req.body,
+        message: "Sorry, we can't seem to find this blog in your collection.",
+      });
+    }
+
+    await console.log("result found", result);
+
+    // If the item does exist, we will remove it
+    const deletedRecipe = await blogs.deleteOne({ _id: recipeId });
+
+    await console.log("deleted", deletedRecipe);
+
+    if (deletedRecipe.deletedCount === 0) {
+      return res.status(404).json({
+        status: 404,
+        data: req.body,
+        message:
+          "Sorry, we can't seem to delete this recipe from your collection.",
+      });
+    }
+
+    // If the recipe is deleted successfully, return the success response
+    return res.status(200).json({
+      status: 200,
+      data: req.body,
+      message: "Recipe deleted successfully",
+    });
+  } catch (err) {
+    // on failure/error, send
+    return res
+      .status(404)
+      .send({ status: 404, success: false, message: error });
+  } finally {
+    // TODO: close client
+    client.close();
+    console.log("disconnected!");
+  }
+};
 
 // GET /categories: Returns a list of all the recipe categories on the website, along with the number of recipes in each category.
 
@@ -575,11 +633,49 @@ const newsletterList = async (req, res) => {
   }
 };
 
-// POST /comments: Adds a new comment to a recipe. This would be used by users to leave comments on a recipe
+// GET /likes/:id : Returns number of likes that are associated to the recipe.
+const getLikes = async (req, res) => {
+  const client = new MongoClient(MONGO_URI, options);
+  await client.connect();
 
-// GET /comments/:id : Returns approved comments that are associated to the recipe. The comments would need to be approved by an admin before it is visible to the public.
+  try {
+    const db = await client.db("food_blog");
+    const blogs = await db.collection("blogs");
 
-// PUT /comments/:id : Updates an existing comment. ADMIN PORTAL API endpoint
+    const { recipeId } = req.params;
+
+    if (!recipeId) {
+      return res
+        .status(400)
+        .send({ status: 400, message: "Recipe ID not provided." });
+    }
+
+    const allRecipes = await blogs.find().toArray();
+
+    let countOfLikes;
+
+    for (let recipe of allRecipes) {
+      if (recipe._id === recipeId) {
+        countOfLikes = recipe.likes || 0;
+        return res.status(200).json({ status: 200, data: countOfLikes });
+      }
+    }
+
+    // No recipe matches the given recipeId
+    return res.status(404).send({
+      status: 404,
+      message: "Recipe not found",
+    });
+  } catch (err) {
+    return res.status(500).send({
+      status: 500,
+      message: "Internal Server Error",
+    });
+  } finally {
+    client.close();
+    console.log("disconnected!");
+  }
+};
 
 module.exports = {
   createBlog,
@@ -593,4 +689,6 @@ module.exports = {
   authenticateUser,
   updateBlog,
   newsletterList,
+  getLikes,
+  deleteRecipe,
 };

@@ -27,8 +27,6 @@ const Header = () => {
     setCurrentUser(null);
   };
 
-  console.log(currentUser);
-
   return (
     <header className="header">
       <nav>

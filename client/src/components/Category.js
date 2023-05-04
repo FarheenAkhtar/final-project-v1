@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { RxAvatar } from "react-icons/rx";
-import { FiHeart } from "react-icons/fi";
-import "./Home.css";
+import "./Category.css";
+import adminAvatar from "../assets/admin_avatar.png";
+import Like from "./Likes";
 
 const CategoryList = () => {
   const { categoryId } = useParams();
@@ -10,8 +10,6 @@ const CategoryList = () => {
   const [recipes, setRecipes] = useState(null);
   const [tags, setTags] = useState([]);
 
-  //   Secondary
-  // const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -31,7 +29,13 @@ const CategoryList = () => {
           throw new Error("Unable to fetch recipes");
         } else {
           res.json().then((resData) => {
-            setRecipes(resData.data);
+            const publishedRecipes = resData.data.filter(
+              (recipe) => recipe.status === "Published"
+            );
+            publishedRecipes.sort(
+              (a, b) => new Date(b.date) - new Date(a.date)
+            );
+            setRecipes(publishedRecipes);
             setLoading(false);
           });
         }
@@ -44,7 +48,7 @@ const CategoryList = () => {
   }
 
   return (
-    <div className="wrapper">
+    <div className="category_recipe_wrapper">
       <div className="horizontal-tag-list">
         <ul>
           {tags.map((tag) => (
@@ -59,25 +63,38 @@ const CategoryList = () => {
           ))}
         </ul>
       </div>
-      <div className="recipe-featured-list">
+      <div className="category_container">
         {recipes.map((recipe) => (
-          <div className="recipe" key={recipe._id}>
-            <img src={recipe.image1} className="featured_image" alt="Header" />
+          <div className="category_featured_recipe" key={recipe._id}>
+            <img
+              src={recipe.image1}
+              className="category_featured_image"
+              alt="Header"
+            />
 
-            <div className="blog-post-container">
-              <img src={RxAvatar} className="admin_image" alt="AdminAvatar" />
-              <div className="post-metadata__date time-ago">{recipe.date}</div>
-              <span className="post-metadata__readTime">2 min</span>
-
+            <div className="category_blog-post-container">
+              <div className="category_post-metadata-container">
+                <img
+                  src={adminAvatar}
+                  className="category_admin_image"
+                  alt="AdminAvatar"
+                />
+                <div>
+                  {new Date(recipe.date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </div>
+                <span>2 min</span>
+              </div>
               <Link to={`/recipes/${recipe._id}`}>
-                <h2>{recipe.title}</h2>
+                <h2 className="category_recipe_title">{recipe.title}</h2>
               </Link>
               <p>{recipe.subtitle}</p>
 
-              <div className="post-stats">
-                <div className="post-footer-view-count">0views</div>
-                <img src={FiHeart} className="post-footer-like-button" />
-                <div>0likes</div>
+              <div className="category_recipe_subtitle">
+                <Like recipeId={recipe._id} />
               </div>
             </div>
           </div>

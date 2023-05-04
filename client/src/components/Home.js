@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Home.css";
-import headerpic from "../assets/headerpic.jpg";
 import adminAvatar from "../assets/admin_avatar.png";
-import { FiHeart } from "react-icons/fi";
+import Like from "./Likes";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -25,7 +24,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <div className="container">
       {featured.slice(0, 4).map((recipe) => (
         <div className="featured_recipe" key={recipe._id}>
           <img src={recipe.image1} className="featured_image" alt="Header" />
@@ -37,10 +36,14 @@ const Home = () => {
                 className="admin_image"
                 alt="AdminAvatar"
               />
-              <div className="post-metadata_date time-ago">
-                {recipe.date.substring(0, 10)}
+              <div>
+                {new Date(recipe.date).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </div>
-              <span className="post-metadata_readTime">2 min</span>
+              <span>2 min</span>
             </div>
 
             <Link to={`/recipes/${recipe._id}`}>
@@ -49,9 +52,7 @@ const Home = () => {
             <div className="recipe_subtitle">{recipe.subtitle}</div>
 
             <div className="post-stats">
-              <div className="post-footer-view-count">0views</div>
-              <img src={FiHeart} className="post-footer-like-button" />
-              <div>0likes</div>
+              <Like recipeId={recipe._id} />
             </div>
           </div>
         </div>

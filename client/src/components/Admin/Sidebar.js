@@ -22,9 +22,9 @@ const Sidebar = () => {
         <h1>All Posts</h1>
       </Link>
 
-      <Link to={`/admin/tags`}>
+      {/* <Link to={`/admin/tags`}>
         <h1>New Tags</h1>
-      </Link>
+      </Link> */}
     </div>
   );
 };
