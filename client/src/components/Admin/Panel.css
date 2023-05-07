@@ -1,0 +1,23 @@
+.panel-main-container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1rem;
+}
+
+.panel-menu-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.5rem;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.addrecipeform {
+  display: flex;
+  flex-direction: column;
+  padding-left: 10%;
+}

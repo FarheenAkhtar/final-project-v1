@@ -1,21 +1,53 @@
-.recipe-featured-list {
+.container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.recipe {
+.featured_recipe {
   display: flex;
-  flex-direction: column;
   padding: 10px;
-  border: 1px solid #ccc;
+  border-width: 1px;
+  border-color: rgba(0, 0, 0, 0.25);
+  border-style: solid;
   border-radius: 5px;
   margin: 10px;
+  width: 50%;
 }
 
-.recipe h2 {
+.featured_image {
+  width: 300px;
+  height: 340.5px;
+}
+
+.recipe_title {
   margin: 0;
+  font-size: 40px;
 }
 
-.recipe p {
-  margin: 10px 0;
+.recipe_subtitle {
+  font-size: 20px;
+}
+
+.post-stats {
+  display: flex;
+}
+
+.admin_image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.blog-post-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-metadata-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }

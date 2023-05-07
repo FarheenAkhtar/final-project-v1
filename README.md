@@ -41,3 +41,19 @@
 ## DELETE /api/comments/:id
 
 **Deletes a comment from the database. This would be used by the admin panel to remove inappropriate comments.**
+
+### POST /contactus
+
+Creates an entry when called. This is the endpoint you'll want to hit when a customer is submitting a message.
+
+You'll need to send a JSON body in the following format:
+
+```json
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "email": "johnsmith@email.com",
+  "phone": "0123456789",
+  "message": "nosecret123#"
+}
+```
